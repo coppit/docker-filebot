@@ -21,8 +21,6 @@ To check the status, run:
 
 `docker logs FileBot`
 
-Also look in amc.log in your config directory.
-
 Configuration
 -------------
 
@@ -30,9 +28,9 @@ When run for the first time, a script named `filebot.sh` will be created in the 
 Edit this file, customizing how you want FileBot to run. For example, you might want to change the file rename
 formatting. Then restart the container.
 
-While editing and testing your filebot.sh, keep in mind that by default FileBot (actually AMC) will not re-process
-files. Delete amc-exclude-list.txt in your config directory, then write a file into the input directory to get FileBot
-to re-process your files.
+While editing and testing your filebot.sh, keep in mind that FileBot (actually AMC) will not re-process files. Delete
+amc-exclude-list.txt in your config directory, then write a file into the input directory to get FileBot to re-process
+your files.
 
 After you gain confidence in how the container is running, you may want to change the action from "copy" to "rename".
 FileBot will move the files from the input to the output directory, then clean up any "leftover junk" in the input
@@ -51,4 +49,5 @@ Later, when you update the container, it may exit with this message in the log:
 This happens because some bugfix or something went into `filebot.sh`. Rather than deleting your `filebot.sh` (and losing
 any hard work you put into it), the container will write `filebot.sh.new`. It's your job to merge the two files. You can
 delete `filebot.sh`.new when you're done. NOTE: You must save `filebot.sh`, even if you don't make any changes to it.
-This will reset the file's timestamp so that the container will know that you performed the merge, so that it can start.
+This will reset the file's timestamp so that the container will know that you performed the merge. It will then start
+normally.

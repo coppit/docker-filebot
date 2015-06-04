@@ -33,7 +33,7 @@ SERIES_FORMAT="TV Shows/{n}/{episode.special ? 'Special' : 'Season '+s.pad(2)}/{
 . /root/pre-run.sh
 
 # See http://www.filebot.net/forums/viewtopic.php?t=215 for details on amc
-filebot -script fn:amc -no-xattr --output /output --log-file /config/amc.log --action copy --conflict auto \
+filebot -script fn:amc -no-xattr --output /output --log-file /root/amc.log --action copy --conflict auto \
   -non-strict --def ut_dir=/input ut_kind=multi music=y deleteAfterExtract=y clean=y \
   excludeList=/config/amc-exclude-list.txt \
   movieFormat="$MOVIE_FORMAT" musicFormat="$MUSIC_FORMAT" seriesFormat="$SERIES_FORMAT"
