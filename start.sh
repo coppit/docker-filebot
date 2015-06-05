@@ -39,13 +39,34 @@ function run_filebot_sh {
 }
 
 # Run once at the start
-echo "$(ts) Running filebot on startup..."
+echo "$(ts) Running filebot on startup"
 run_filebot_sh
 
-# Wait forever for changes
-inotifywait -m -q -e close_write --format '%f' /input | while read FILE
+echo "$(ts) Waiting for changes..."
+
+inotifywait -m -q --format '%e %f' /input | while read RECORD
 do
-  echo "$(ts) Detected new file $FILE. Running FileBot."
+  EVENT=$(echo "$RECORD" | cut -d' ' -f 1)
+  FILE=$(echo "$RECORD" | cut -d' ' -f 2-)
+
+#  echo "$RECORD"
+#  echo "  EVENT=$EVENT"
+#  echo "  FILE=$FILE"
+
+  if [ "$EVENT" == "CREATE,ISDIR" ]
+  then
+    echo "$(ts) Detected new directory: $FILE"
+  elif [ "$EVENT" == "CLOSE_WRITE,CLOSE" ]
+  then
+    echo "$(ts) Detected new file: $FILE"
+  elif [ "$EVENT" == "MOVED_TO" ]
+  then
+    echo "$(ts) Detected moved file: $FILE"
+  else
+    continue
+  fi
+
+  echo "$(ts) Running FileBot"
 
   run_filebot_sh
 done
