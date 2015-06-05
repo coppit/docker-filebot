@@ -43,11 +43,10 @@ Later, when you update the container, it may exit with this message in the log:
 
 > ERROR: The container's filebot.sh is newer than the one in /config.
 >  Copying the new script to /config/filebot.sh.new.
->  Compare your filebot.sh and filebot.sh.new. Save filebot.sh to reset its timestamp,
->  then restart the container.
+>  Compare your filebot.sh and filebot.sh.new, being sure to copy over the VERSION line.
+>  Then restart the container.
 
 This happens because some bugfix or something went into `filebot.sh`. Rather than deleting your `filebot.sh` (and losing
 any hard work you put into it), the container will write `filebot.sh.new`. It's your job to merge the two files. You can
-delete `filebot.sh`.new when you're done. NOTE: You must save `filebot.sh`, even if you don't make any changes to it.
-This will reset the file's timestamp so that the container will know that you performed the merge. It will then start
-normally.
+delete `filebot.sh`.new when you're done. NOTE: You must increase the VERSION even if you make no other changes.  This
+will let the container know that you performed the merge. It will then start normally.
