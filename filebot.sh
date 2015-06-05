@@ -29,6 +29,9 @@ SERIES_FORMAT="TV Shows/{n}/{episode.special ? 'Special' : 'Season '+s.pad(2)}/{
 
 #-----------------------------------------------------------------------------------------------------------------------
 
+# Used to detect old versions of this script
+VERSION=1
+
 # Download scripts and such.
 . /root/pre-run.sh
 

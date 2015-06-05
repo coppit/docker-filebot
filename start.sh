@@ -13,7 +13,12 @@ if [ ! -f /config/filebot.sh ]; then
   exit 1
 fi
 
-if test "`find /root/filebot.sh -newer /config/filebot.sh`"
+USER_VERSION=$(grep '^VERSION=' /config/filebot.sh 2>/dev/null | sed 's/VERSION=//')
+CURRENT_VERSION=$(grep '^VERSION=' /root/filebot.sh | sed 's/VERSION=//')
+
+echo "$(ts) Comparing user's filebot.sh at version $USER_VERSION versus current version $CURRENT_VERSION"
+
+if [ -z "$USER_VERSION" ] || [ "$USER_VERSION" -lt "$CURRENT_VERSION" ]
 then
   echo "$(ts) ERROR: The container's filebot.sh is newer than the one in /config."
   echo "$(ts)   Copying the new script to /config/filebot.sh.new."
