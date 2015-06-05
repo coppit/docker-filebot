@@ -27,12 +27,11 @@ RUN set -x \
 VOLUME ["/input", "/output", "/config"]
 
 # Add scripts
-ADD start.sh /root/start.sh
-RUN chmod +x /root/start.sh
 ADD pre-run.sh /root/pre-run.sh
 RUN chmod +x /root/pre-run.sh
-
-# Create default script to run
+ADD start.sh /root/start.sh
+RUN chmod +x /root/start.sh
 ADD filebot.sh /root/filebot.sh
+RUN chmod +x /root/start.sh
 
 CMD /root/start.sh
