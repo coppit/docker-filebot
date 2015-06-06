@@ -37,7 +37,8 @@ your files.
 
 After you gain confidence in how the container is running, you may want to change the action from "copy" to "rename".
 FileBot will move the files from the input to the output directory, then clean up any "leftover junk" in the input
-directory.
+directory. If you're going to do this, then it's also probably a good idea to store temporary files and incomplete
+downloads in a different directory than the input directory, just in case FileBot decides to move them.
 
 Updates to filebot.sh
 ---------------------
