@@ -21,6 +21,9 @@ To check the status, run:
 
 `docker logs FileBot`
 
+When the container detects a change to the input directory, it will wait up to 60 seconds for changes to stop for 5
+seconds. FileBot will be run if the directory stabilizes for 5 seconds, or if the 60 second maximum wait time elapses.
+
 Configuration
 -------------
 

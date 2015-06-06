@@ -1,5 +1,15 @@
 #!/bin/bash
 
+# After seeing the first event, don't run FileBot until we've processed any other events that might be happening.
+# Otherwise we'll end up calling FileBot 100 times for the case where someone moves 100 files into the input directory.
+
+# If we don't see any events for $SETTLE_DURATION time, assume that it's safe to run FileBot
+SETTLE_DURATION=5
+
+# However, if we see continuous events for longer than $MAX_WAIT_TIME with no break of $SETTLE_DURATION or more, then
+# go ahead and run FileBot. Otherwise we might be waiting forever for the directory to stop getting events.
+MAX_WAIT_TIME=60
+
 function ts {
   echo [`date '+%b %d %X'`]
 }
@@ -42,31 +52,56 @@ function run_filebot_sh {
 echo "$(ts) Running filebot on startup"
 run_filebot_sh
 
+pipe=$(mktemp -u)
+mkfifo $pipe
+
 echo "$(ts) Waiting for changes..."
+inotifywait -m -q --format '%e %f' /input >$pipe &
 
-inotifywait -m -q --format '%e %f' /input | while read RECORD
+while true
 do
-  EVENT=$(echo "$RECORD" | cut -d' ' -f 1)
-  FILE=$(echo "$RECORD" | cut -d' ' -f 2-)
+  if read RECORD
+  then
+    EVENT=$(echo "$RECORD" | cut -d' ' -f 1)
+    FILE=$(echo "$RECORD" | cut -d' ' -f 2-)
 
-#  echo "$RECORD"
-#  echo "  EVENT=$EVENT"
-#  echo "  FILE=$FILE"
+#    echo "$RECORD"
+#    echo "  EVENT=$EVENT"
+#    echo "  FILE=$FILE"
 
-  if [ "$EVENT" == "CREATE,ISDIR" ]
-  then
-    echo "$(ts) Detected new directory: $FILE"
-  elif [ "$EVENT" == "CLOSE_WRITE,CLOSE" ]
-  then
-    echo "$(ts) Detected new file: $FILE"
-  elif [ "$EVENT" == "MOVED_TO" ]
-  then
-    echo "$(ts) Detected moved file: $FILE"
-  else
-    continue
+    if [ "$EVENT" == "CREATE,ISDIR" ]
+    then
+      echo "$(ts) Detected new directory: $FILE"
+    elif [ "$EVENT" == "CLOSE_WRITE,CLOSE" ]
+    then
+      echo "$(ts) Detected new file: $FILE"
+    elif [ "$EVENT" == "MOVED_TO" ]
+    then
+      echo "$(ts) Detected moved file: $FILE"
+    else
+      continue
+    fi
+
+    # Monster up as many events as possible, until we hit the either the settle duration, or the max wait threshold.
+    start_time=$(date +"%s")
+
+    while true
+    do
+      if read -t $SETTLE_DURATION RECORD
+      then
+        end_time=$(date +"%s")
+
+        if [ $(($end_time-$start_time)) -gt $MAX_WAIT_TIME ]
+        then
+          echo "$(ts) Input directory didn't stabilize after $MAX_WAIT_TIME seconds. Running FileBot anyway."
+          break
+        fi
+      else
+        echo "$(ts) Input directory stabilized for $SETTLE_DURATION seconds. Running FileBot."
+        break
+      fi
+    done
+
+    run_filebot_sh
   fi
-
-  echo "$(ts) Running FileBot"
-
-  run_filebot_sh
-done
+done <$pipe
