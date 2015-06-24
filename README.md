@@ -40,6 +40,9 @@ FileBot will move the files from the input to the output directory, then clean u
 directory. If you're going to do this, then it's also probably a good idea to store temporary files and incomplete
 downloads in a different directory than the input directory, just in case FileBot decides to move them.
 
+By default, FileBot will create files using user ID 0 (typically root) and group ID 0 (typically root). If you wish to
+change this, set the `UGID` environment variable to `<user id>:<group id>`. For example, `-e UGID=99:100`.
+
 Updates to filebot.sh
 ---------------------
 

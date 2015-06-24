@@ -15,23 +15,36 @@ RUN add-apt-repository ppa:webupd8team/java \
   && apt-get update \
   && apt-get install -y oracle-java8-installer
 
+# Create dir to keep things tidy. Make sure it's readable by $UID
+RUN mkdir /files
+RUN chmod a+rwX /files
+
 # Use of inotify inspired by inkubux/filebot-inotifywatch
 RUN set -x \
 #  && apt-get update \
   && apt-get install -y inotify-tools \
-  && wget -O /root/filebot.deb 'https://www.filebot.net/download.php?mode=s&type=deb&arch=amd64' \
-  && dpkg -i /root/filebot.deb && rm /root/filebot.deb \
+  && wget -O /files/filebot.deb 'https://www.filebot.net/download.php?mode=s&type=deb&arch=amd64' \
+  && dpkg -i /files/filebot.deb && rm /files/filebot.deb \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 VOLUME ["/input", "/output", "/config"]
 
-# Add scripts
-ADD pre-run.sh /root/pre-run.sh
-RUN chmod +x /root/pre-run.sh
-ADD start.sh /root/start.sh
-RUN chmod +x /root/start.sh
-ADD filebot.sh /root/filebot.sh
-RUN chmod +x /root/start.sh
+# Rev-locking this to ensure reproducible builds
+RUN wget -O /files/runas.sh \
+  'https://raw.githubusercontent.com/coppit/docker-inotify-command/9b917885c2bb2e8d4e0e4b3fc6cdaec9fa411315/runas.sh'
+RUN chmod +x /files/runas.sh
 
-CMD /root/start.sh
+# Add scripts. Make sure start.sh, pre-run.sh, and filebot.sh are executable by $UID
+ADD pre-run.sh /files/pre-run.sh
+RUN chmod a+x /files/pre-run.sh
+ADD start.sh /files/start.sh
+RUN chmod a+x /files/start.sh
+ADD filebot.sh /files/filebot.sh
+RUN chmod a+wx /files/filebot.sh
+
+ENV UGID 0:0
+ENV UMAP ""
+ENV GMAP ""
+
+CMD /files/runas.sh "$UMAP" "$GMAP" "$UGID" /files/start.sh
