@@ -32,7 +32,7 @@ VOLUME ["/input", "/output", "/config"]
 
 # Rev-locking this to ensure reproducible builds
 RUN wget -O /files/runas.sh \
-  'https://raw.githubusercontent.com/coppit/docker-inotify-command/9b917885c2bb2e8d4e0e4b3fc6cdaec9fa411315/runas.sh'
+  'https://raw.githubusercontent.com/coppit/docker-inotify-command/dd981dc799362d47387da584e1a276bbd1f1bd1b/runas.sh'
 RUN chmod +x /files/runas.sh
 
 # Add scripts. Make sure start.sh, pre-run.sh, and filebot.sh are executable by $UID
@@ -43,8 +43,8 @@ RUN chmod a+x /files/start.sh
 ADD filebot.sh /files/filebot.sh
 RUN chmod a+wx /files/filebot.sh
 
-ENV UGID 0:0
-ENV UMAP ""
-ENV GMAP ""
+ENV USER_ID 0
+ENV GROUP_ID 0
+ENV UMASK 0000
 
-CMD /files/runas.sh "$UMAP" "$GMAP" "$UGID" /files/start.sh
+CMD /files/runas.sh $USER_ID $GROUP_ID $UMASK /files/start.sh
