@@ -55,7 +55,7 @@ pipe=$(mktemp -u)
 mkfifo $pipe
 
 echo "$(ts) Waiting for changes..."
-inotifywait -m -q --format '%e %f' /input >$pipe &
+inotifywait -r -m -q --format '%e %f' /input >$pipe &
 
 while true
 do
