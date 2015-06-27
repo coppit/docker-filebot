@@ -52,4 +52,4 @@ ENV USER_ID 0
 ENV GROUP_ID 0
 ENV UMASK 0000
 
-CMD /files/runas.sh $USER_ID $GROUP_ID $UMASK /files/start.sh
+CMD /files/start.sh
