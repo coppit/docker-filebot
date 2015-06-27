@@ -77,7 +77,7 @@ create_conf_and_sh_files
 
 # Run once at the start
 echo "$(ts) Running FileBot on startup"
-bash /files/filebot.sh
+/files/runas.sh $USER_ID $GROUP_ID $UMASK /files/filebot.sh &
 
 # Start monitoring
 /files/monitor.sh /files/FileBot.conf
