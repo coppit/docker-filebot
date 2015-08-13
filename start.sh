@@ -67,6 +67,14 @@ EOF
 
 #-----------------------------------------------------------------------------------------------------------------------
 
+function setup_opensubtitles_account {
+  if [ -f /config/opensubtitles.conf ]; then
+    /files/runas.sh $USER_ID $GROUP_ID $UMASK filebot -script fn:osdb.login < /config/opensubtitles.conf
+  fi
+}
+
+#-----------------------------------------------------------------------------------------------------------------------
+
 echo "$(ts) Starting FileBot container"
 
 initialize_configuration
@@ -74,6 +82,8 @@ initialize_configuration
 check_filebot_sh_version
 
 create_conf_and_sh_files
+
+setup_opensubtitles_account
 
 # Run once at the start
 echo "$(ts) Running FileBot on startup"
