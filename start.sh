@@ -7,6 +7,9 @@ function ts {
 #-----------------------------------------------------------------------------------------------------------------------
 
 function initialize_configuration {
+  echo "$(ts) Creating /config/filebot.conf.new"
+  cp /files/filebot.conf /config/filebot.conf.new
+
   if [ ! -f /config/filebot.conf ]
   then
     echo "$(ts) Creating /config/filebot.conf"
@@ -68,7 +71,7 @@ EOF
 #-----------------------------------------------------------------------------------------------------------------------
 
 function setup_opensubtitles_account {
-  . /files/FileBot.conf
+  . /config/filebot.conf
 
   if [ "$OPENSUBTITLES_USER" != "" ]; then
     echo -en "$OPENSUBTITLES_USER\n$OPENSUBTITLES_PASSWORD\n" | /files/runas.sh $USER_ID $GROUP_ID $UMASK filebot -script fn:configure
