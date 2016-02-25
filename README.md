@@ -7,17 +7,21 @@ into the input directory, and they'll be cleaned up and moved to the output dire
 Usage
 -----
 
-This docker image is available as a [trusted build on the docker index](https://index.docker.io/u/coppit/filebot/).
+This docker image is available as a [trusted build on the docker index](https://hub.docker.com/r/coppit/filebot/).
 
 Run:
 
-`sudo docker run --name=FileBot -d -v /etc/localtime:/etc/localtime -v /config/dir/path:/config:rw -v /input/dir/path:/input -v /output/dir/path:/output:rw coppit/filebot`
+`sudo docker run --name=FileBot -d -v /etc/localtime:/etc/localtime -v /config/dir/path:/config:rw -v /input/dir/path:/input:rw -v /output/dir/path:/output:rw coppit/filebot`
 
 With the default configuration, files written to the input directory will be renamed and copied to the output directory.
 It is recommended that you do **not** overlap your input and output directories. FileBot will end up re-processing files
 that it already processed, and generally make a mess of things.
 
-To check the status, run:
+Note that the /input path is writable above. This is because subtitles are first downloaded into the input directory
+before being moved to the output directory. If you are paranoid about FileBot messing with your input files, and don't
+care about downloading subtitles, you can make /input read-only by removing ":rw".
+
+To check the status of the container, run:
 
 `docker logs FileBot`
 
@@ -26,6 +30,10 @@ seconds. FileBot will be run if the directory stabilizes for 5 seconds, or if th
 
 Configuration
 -------------
+
+When run for the first time, a config file named `filebot.conf` will be created in the config dir. (If you are upgrading
+from an old version, compare your existing `filebot.conf` against `filebot.conf.new` instead.) If you wish to download
+subtitles, edit the config file to set the username and password, as well as the language.
 
 When run for the first time, a script named `filebot.sh` will be created in the config dir, and the container will exit.
 Edit this file, customizing how you want FileBot to run. For example, you might want to change the file rename
