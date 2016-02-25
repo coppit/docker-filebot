@@ -74,7 +74,10 @@ function setup_opensubtitles_account {
   . /config/filebot.conf
 
   if [ "$OPENSUBTITLES_USER" != "" ]; then
+    echo "$(ts) Configuring for OpenSubtitles user \"$OPENSUBTITLES_USER\""
     echo -en "$OPENSUBTITLES_USER\n$OPENSUBTITLES_PASSWORD\n" | /files/runas.sh $USER_ID $GROUP_ID $UMASK filebot -script fn:configure
+  else
+    echo "$(ts) No OpenSubtitles user set. Skipping setup..."
   fi
 }
 
