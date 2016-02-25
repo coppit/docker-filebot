@@ -68,8 +68,10 @@ EOF
 #-----------------------------------------------------------------------------------------------------------------------
 
 function setup_opensubtitles_account {
-  if [ -f /config/opensubtitles.conf ]; then
-    /files/runas.sh $USER_ID $GROUP_ID $UMASK filebot -script fn:osdb.login < /config/opensubtitles.conf
+  . /files/FileBot.conf
+
+  if [ "$OPENSUBTITLES_USER" != "" ]; then
+    echo -en "$OPENSUBTITLES_USER\n$OPENSUBTITLES_PASSWORD\n" | /files/runas.sh $USER_ID $GROUP_ID $UMASK filebot -script fn:configure
   fi
 }
 
