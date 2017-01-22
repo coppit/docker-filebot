@@ -1,0 +1,1 @@
+- Swap out inotify for a more robust notification mechanism that supports polling, such as https://github.com/guard/listen
