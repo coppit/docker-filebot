@@ -32,7 +32,7 @@ When run for the first time, a script named `filebot.sh` will be created in the 
 
 While editing and testing your filebot.sh, keep in mind that FileBot (actually AMC) will not re-process files. Delete amc-exclude-list.txt in your config directory, then write a file into the input directory to get FileBot to re-process your files.
 
-After you gain confidence in how the container is running, you may want to change the action from "copy" to "rename".  FileBot will move the files from the input to the output directory, then clean up any "leftover junk" in the input directory. If you're going to do this, then it's also probably a good idea to store temporary files and incomplete downloads in a different directory than the input directory, just in case FileBot decides to move them.
+After you gain confidence in how the container is running, you may want to change the action from "copy" to "move".  FileBot will move the files from the input to the output directory, then clean up any "leftover junk" in the input directory. If you're going to do this, then it's also probably a good idea to store temporary files and incomplete downloads in a different directory than the input directory, just in case FileBot decides to move them.
 
 By default, FileBot will create files using user ID 0 (typically root) and group ID 0 (typically root), and with a umask of 0022. If you wish to change this, set the `USER_ID`, `GROUP_ID`, and `UMASK` environment variables to the right values from your host system. You can find the IDs using the "id" command. For example, for the user "nobody", it would be `id -u nobody` and `id -g nobody`. You can get the umask for a user like "nobody" by running `su -l nobody -c umask`.
 
@@ -47,3 +47,8 @@ Later, when you update the container, it may exit with this message in the log:
 >  Then restart the container.
 
 This happens because some bugfix or something went into `filebot.sh`. Rather than deleting your `filebot.sh` (and losing any hard work you put into it), the container will write `filebot.sh.new`. It's your job to merge the two files. You can delete `filebot.sh`.new when you're done. NOTE: You must increase the VERSION even if you make no other changes.  This will let the container know that you performed the merge. It will then start normally.
+
+Known Limitations
+-----------------
+
+This container uses the inotify interface for watching for file system changes. This only works for kernel-supported file systems. It won't work for network shares.
