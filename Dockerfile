@@ -54,4 +54,10 @@ ENV USER_ID 0
 ENV GROUP_ID 0
 ENV UMASK 0000
 
+# Set the locale, to help filebot deal with files that have non-ASCII characters
+RUN locale-gen en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL en_US.UTF-8
+
 CMD /files/start.sh
