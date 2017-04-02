@@ -48,7 +48,7 @@ function check_filebot_sh_version {
 #-----------------------------------------------------------------------------------------------------------------------
 
 function create_conf_and_sh_files {
-  # Create the config file for monitor.sh
+  # Create the config file for monitor.py
   tr -d '\r' < /config/filebot.conf > /files/FileBot.conf
 
   cat <<"EOF" >> /files/FileBot.conf
@@ -98,4 +98,4 @@ echo "$(ts) Running FileBot on startup"
 /files/runas.sh $USER_ID $GROUP_ID $UMASK /files/filebot.sh &
 
 # Start monitoring
-/files/monitor.sh /files/FileBot.conf
+/files/monitor.py /files/FileBot.conf
