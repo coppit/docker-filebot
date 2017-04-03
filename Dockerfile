@@ -33,10 +33,10 @@ VOLUME ["/input", "/output", "/config"]
 
 # Rev-locking this to ensure reproducible builds
 RUN wget -O /files/runas.sh \
-  'https://raw.githubusercontent.com/coppit/docker-inotify-command/d0b25a4ed40582f5e2d21282c32c58164495c07b/runas.sh'
+  'https://raw.githubusercontent.com/coppit/docker-inotify-command/1401a636bbc9369141d0d32ac7b80c2bf7fcdbcb/runas.sh'
 RUN chmod +x /files/runas.sh
 RUN wget -O /files/monitor.py \
-  'https://raw.githubusercontent.com/coppit/docker-inotify-command/7ed3d92e8b6c178944b89d986ea8156e5d1f0707/monitor.py'
+  'https://raw.githubusercontent.com/coppit/docker-inotify-command/1401a636bbc9369141d0d32ac7b80c2bf7fcdbcb/monitor.py'
 RUN chmod +x /files/monitor.py
 
 # Add scripts. Make sure start.sh, pre-run.sh, and filebot.sh are executable by $USER_ID
