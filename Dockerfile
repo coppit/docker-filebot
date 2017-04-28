@@ -27,7 +27,7 @@ RUN set -x \
 #  && apt-get update \
   # libchromaprint-tools for fpcalc, used to compute AcoustID fingerprints for MP3s
   && apt-get install -y python3-watchdog mediainfo libchromaprint-tools \
-  && wget -O /files/filebot.deb 'https://app.filebot.net/download.php?type=deb&arch=amd64&version=4.7.8' \
+  && wget -O /files/filebot.deb 'https://app.filebot.net/download.php?type=deb&arch=amd64&version=4.7.9' \
   && dpkg -i /files/filebot.deb && rm /files/filebot.deb \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
