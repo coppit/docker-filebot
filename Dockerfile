@@ -7,21 +7,31 @@ CMD ["/sbin/my_init"]
 
 ENV DEBIAN_FRONTEND noninteractive
 
+RUN \
+
 # Speed up APT
-RUN echo "force-unsafe-io" > /etc/dpkg/dpkg.cfg.d/02apt-speedup \
-  && echo "Acquire::http {No-Cache=True;};" > /etc/apt/apt.conf.d/no-cache
+echo "force-unsafe-io" > /etc/dpkg/dpkg.cfg.d/02apt-speedup && \
+echo "Acquire::http {No-Cache=True;};" > /etc/apt/apt.conf.d/no-cache && \
 
 # Auto-accept Oracle JDK license
-RUN echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections
+echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections && \
 
 # Filebot needs Java 8
-RUN add-apt-repository ppa:webupd8team/java \
-  && apt-get update \
-  && apt-get install -y oracle-java8-installer
+add-apt-repository ppa:webupd8team/java && \
+apt-get update && \
+# Install a specific version for reproducible builds
+apt-get install -qy 'oracle-java8-installer=8u131-1~webupd8~2' && \
 
-# Create dir to keep things tidy. Make sure it's readable by $USER_ID
-RUN mkdir /files
-RUN chmod a+rwX /files
+# libchromaprint-tools for fpcalc, used to compute AcoustID fingerprints for MP3s
+apt-get install -y python3-watchdog mediainfo libchromaprint-tools && \
+
+# clean up
+apt-get clean && \
+rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+/usr/share/man /usr/share/groff /usr/share/info \
+/usr/share/lintian /usr/share/linda /var/cache/man && \
+(( find /usr/share/doc -depth -type f ! -name copyright|xargs rm || true )) && \
+(( find /usr/share/doc -empty|xargs rmdir || true ))
 
 VOLUME ["/input", "/output", "/config"]
 
@@ -29,20 +39,22 @@ ENV USER_ID 0
 ENV GROUP_ID 0
 ENV UMASK 0000
 
-# Set the locale, to help filebot deal with files that have non-ASCII characters
+# Set the locale, to support files that have non-ASCII characters
 RUN locale-gen en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
-RUN set -x \
-#  && apt-get update \
-  # libchromaprint-tools for fpcalc, used to compute AcoustID fingerprints for MP3s
-  && apt-get install -y python3-watchdog mediainfo libchromaprint-tools \
-  && wget -O /files/filebot.deb 'https://app.filebot.net/download.php?type=deb&arch=amd64&version=4.7.9' \
-  && dpkg -i /files/filebot.deb && rm /files/filebot.deb \
-  && apt-get clean \
-  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN \
+
+# Create dir to keep things tidy. Make sure it's readable by $USER_ID
+mkdir /files && \
+chmod a+rwX /files && \
+
+# To find the latest version: https://www.filebot.net/download.php?mode=s&type=deb&arch=amd64
+# We'll use a specific version for reproducible builds
+wget -N 'https://sourceforge.net/projects/filebot/files/filebot/FileBot_4.7.9/filebot_4.7.9_amd64.deb' -O /files/filebot.deb && \
+dpkg -i /files/filebot.deb && rm /files/filebot.deb
 
 # Rev-locking this to ensure reproducible builds
 RUN wget -O /files/runas.sh \
