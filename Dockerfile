@@ -2,6 +2,9 @@ FROM phusion/baseimage:0.9.21
 
 MAINTAINER David Coppit <david@coppit.org>
 
+# Use baseimage-docker's init system
+CMD ["/sbin/my_init"]
+
 ENV DEBIAN_FRONTEND noninteractive
 
 # Speed up APT
@@ -39,15 +42,18 @@ RUN wget -O /files/monitor.py \
   'https://raw.githubusercontent.com/coppit/docker-inotify-command/1401a636bbc9369141d0d32ac7b80c2bf7fcdbcb/monitor.py'
 RUN chmod +x /files/monitor.py
 
-# Add scripts. Make sure start.sh, pre-run.sh, and filebot.sh are executable by $USER_ID
+# Add scripts. Make sure everything is executable by $USER_ID
 ADD pre-run.sh /files/pre-run.sh
 RUN chmod a+x /files/pre-run.sh
-ADD start.sh /files/start.sh
-RUN chmod a+x /files/start.sh
 ADD filebot.sh /files/filebot.sh
-RUN chmod a+wx /files/filebot.sh
 ADD filebot.conf /files/filebot.conf
 RUN chmod a+w /files/filebot.conf
+
+ADD 50_configure_filebot.sh /etc/my_init.d/
+
+RUN mkdir /etc/service/filebot
+ADD monitor.sh /etc/service/filebot/run
+RUN chmod +x /etc/service/filebot/run
 
 ENV USER_ID 0
 ENV GROUP_ID 0
@@ -58,5 +64,3 @@ RUN locale-gen en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
-
-CMD /files/start.sh

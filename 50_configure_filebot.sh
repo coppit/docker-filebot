@@ -17,6 +17,10 @@ function initialize_configuration {
     chmod a+w /config/filebot.conf
   fi
 
+  # Clean up carriage returns
+  tr -d '\r' < /config/filebot.conf > /tmp/filebot.conf
+  mv -f /tmp/filebot.conf /config/filebot.conf
+
   # Create filebot.sh unless there is already one
   if [ ! -f /config/filebot.sh ]
   then
@@ -66,6 +70,7 @@ EOF
 
   # Strip \r from the user-provided filebot.sh
   tr -d '\r' < /config/filebot.sh > /files/filebot.sh
+  chmod a+wx /files/filebot.sh
 }
 
 #-----------------------------------------------------------------------------------------------------------------------
@@ -92,10 +97,3 @@ check_filebot_sh_version
 create_conf_and_sh_files
 
 setup_opensubtitles_account
-
-# Run once at the start
-echo "$(ts) Running FileBot on startup"
-/files/runas.sh $USER_ID $GROUP_ID $UMASK /files/filebot.sh &
-
-# Start monitoring
-/files/monitor.py /files/FileBot.conf
