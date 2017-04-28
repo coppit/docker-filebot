@@ -23,6 +23,18 @@ RUN add-apt-repository ppa:webupd8team/java \
 RUN mkdir /files
 RUN chmod a+rwX /files
 
+VOLUME ["/input", "/output", "/config"]
+
+ENV USER_ID 0
+ENV GROUP_ID 0
+ENV UMASK 0000
+
+# Set the locale, to help filebot deal with files that have non-ASCII characters
+RUN locale-gen en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL en_US.UTF-8
+
 RUN set -x \
 #  && apt-get update \
   # libchromaprint-tools for fpcalc, used to compute AcoustID fingerprints for MP3s
@@ -31,8 +43,6 @@ RUN set -x \
   && dpkg -i /files/filebot.deb && rm /files/filebot.deb \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-VOLUME ["/input", "/output", "/config"]
 
 # Rev-locking this to ensure reproducible builds
 RUN wget -O /files/runas.sh \
@@ -54,13 +64,3 @@ ADD 50_configure_filebot.sh /etc/my_init.d/
 RUN mkdir /etc/service/filebot
 ADD monitor.sh /etc/service/filebot/run
 RUN chmod +x /etc/service/filebot/run
-
-ENV USER_ID 0
-ENV GROUP_ID 0
-ENV UMASK 0000
-
-# Set the locale, to help filebot deal with files that have non-ASCII characters
-RUN locale-gen en_US.UTF-8
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US:en
-ENV LC_ALL en_US.UTF-8
