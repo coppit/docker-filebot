@@ -1,5 +1,4 @@
 # docker-filebot
-==============
 
 This is a Docker container for running [FileBot](http://www.filebot.net/), a media file organizer. The container has
 both a user interface as well as a fully automated mode. The GUI is exposed via RDP and HTTP. For the automated version,
