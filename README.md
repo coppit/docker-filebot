@@ -1,8 +1,6 @@
 # docker-filebot
 
-This is a Docker container for running [FileBot](http://www.filebot.net/), a media file organizer. The container has
-both a user interface as well as a fully automated mode. The GUI is exposed via RDP and HTTP. For the automated version,
-you just drop files into the input directory, and they'll be cleaned up and moved to the output directory.
+This is a Docker container for running [FileBot](http://www.filebot.net/), a media file organizer. The container has both a user interface as well as a fully automated mode. The GUI is exposed via RDP and HTTP. For the automated version, you just drop files into the input directory, and they'll be cleaned up and moved to the output directory.
 
 This docker image is available [on Docker Hub](https://hub.docker.com/r/coppit/filebot/).
 
@@ -12,9 +10,9 @@ This docker image is available [on Docker Hub](https://hub.docker.com/r/coppit/f
 
 To use this container for a user interface to FileBot:
 
-`docker run --name=FileBotUI -e WIDTH=1280 -e HEIGHT=720 -p 3389:3389 -p 8080:8080 -v /output/dir/path:/output:rw -v /config/dir/path:/config:rw coppit/filebot`
+`docker run --name=FileBotUI -e WIDTH=1280 -e HEIGHT=720 -p 3389:3389 -p 8080:8080 -v /media/dir/path:/media:rw -v /config/dir/path:/config:rw coppit/filebot`
 
-In this mode, point the UI at the /output folder, which is shared with the host.
+In this mode, point the UI at the /media folder, which is shared with the host.
 
 There are two ways to use the interactive user interface. One is to connect to the UI in your web browser with the URL http://host:8080/#/client/c/HandBrake. The second is to connect with a remote desktop client using port 3389. There are RDP clients for multiple platforms:
 
@@ -46,7 +44,7 @@ To check the status of the container, run:
 
 You can also combine all of the flags into one big command, to support both the UI as well as the automated conversion.
 
-`docker run --name=FileBot -e WIDTH=1280 -e HEIGHT=720 -p 3389:3389 -p 8080:8080 -v /input/dir/path:/input:rw -v /output/dir/path:/output:rw -v /config/dir/path:/config:rw coppit/filebot`
+`docker run --name=FileBot -e WIDTH=1280 -e HEIGHT=720 -p 3389:3389 -p 8080:8080 -v /media/dir/path:/media:rw -v /input/dir/path:/input:rw -v /output/dir/path:/output:rw -v /config/dir/path:/config:rw coppit/filebot`
 
 Just be careful not to use the /input directory with the UI. Otherwise you'll be triggering the automated update.
 
@@ -72,6 +70,14 @@ Later, when you update the container, it may exit with this message in the log:
 >  Then restart the container.
 
 This happens because some bugfix or something went into `filebot.sh`. Rather than deleting your `filebot.sh` (and losing any hard work you put into it), the container will write `filebot.sh.new`. It's your job to merge the two files. You can delete `filebot.sh`.new when you're done. NOTE: You must increase the VERSION even if you make no other changes.  This will let the container know that you performed the merge. It will then start normally.
+
+## Advanced Configuration when Moving Files in FileBot 
+
+When using the non-interactive method, combined with FileBot's option to move instead of copy files, the moves can be slow if the container is configured with separate /input and /output directories. In this case, you can configure the container to operate on a single mounted volume. First, mount only the /media path:
+
+`docker run --name=FileBot -d -v /media/dir/path:/media:rw -v /config/dir/path:/config:rw coppit/filebot`
+
+Then, specify the `INPUT_DIR` and `OUTPUT_DIR` variables in your filebot.conf as subfolders of /media. Make sure that your output is not a subfolder of your input, or you'll confuse the change monitor.
 
 ## Known Limitations
 

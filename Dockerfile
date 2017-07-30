@@ -51,7 +51,7 @@ rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
 (( find /usr/share/doc -depth -type f ! -name copyright|xargs rm || true )) && \
 (( find /usr/share/doc -empty|xargs rmdir || true ))
 
-VOLUME ["/input", "/output", "/config"]
+VOLUME ["/media", "/input", "/output", "/config"]
 
 ENV USER_ID 0
 ENV GROUP_ID 0

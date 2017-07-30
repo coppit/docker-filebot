@@ -53,11 +53,23 @@ function check_filebot_sh_version {
 
 function create_conf_and_sh_files {
   # Create the config file for monitor.py
-  tr -d '\r' < /config/filebot.conf > /files/FileBot.conf
+  cat <<"EOF" > /files/FileBot.conf
+if [[ -z "$INPUT_DIR" ]]
+then
+  INPUT_DIR=/input
+fi
+
+if [[ -z "$OUTPUT_DIR" ]]
+then
+  OUTPUT_DIR=/output
+fi
+EOF
+
+  tr -d '\r' < /config/filebot.conf >> /files/FileBot.conf
 
   cat <<"EOF" >> /files/FileBot.conf
 
-WATCH_DIR=/input
+WATCH_DIR="$INPUT_DIR"
 
 COMMAND="bash /files/filebot.sh"
 
@@ -71,6 +83,27 @@ EOF
   # Strip \r from the user-provided filebot.sh
   tr -d '\r' < /config/filebot.sh > /files/filebot.sh
   chmod a+wx /files/filebot.sh
+}
+
+#-----------------------------------------------------------------------------------------------------------------------
+
+function validate_configuration {
+  . /files/FileBot.conf
+
+  if [[ ! -d "$INPUT_DIR" ]]; then
+    echo "$(ts) INPUT_DIR=$INPUT_DIR does not exist"
+    exit 1
+  fi
+
+  if [[ ! -d "$OUTPUT_DIR" ]]; then
+    echo "$(ts) OUTPUT_DIR=$OUTPUT_DIR does not exist"
+    exit 1
+  fi
+
+  if find "$INPUT_DIR" -inum $(stat -c '%i' "$OUTPUT_DIR") 2>/dev/null | grep . 1>/dev/null 2>&1; then
+    echo "$(ts) OUTPUT_DIR=$OUTPUT_DIR can not be a subdirectory of INPUT_DIR=$INPUT_DIR"
+    exit 1
+  fi
 }
 
 #-----------------------------------------------------------------------------------------------------------------------
@@ -95,5 +128,7 @@ initialize_configuration
 check_filebot_sh_version
 
 create_conf_and_sh_files
+
+validate_configuration
 
 setup_opensubtitles_account
