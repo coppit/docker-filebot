@@ -63,13 +63,19 @@ if [[ -z "$OUTPUT_DIR" ]]
 then
   OUTPUT_DIR=/output
 fi
+
 EOF
 
   tr -d '\r' < /config/filebot.conf >> /files/FileBot.conf
 
+  # Literal $INPUT_DIR
   cat <<"EOF" >> /files/FileBot.conf
 
 WATCH_DIR="$INPUT_DIR"
+EOF
+
+  # Interpolate $USER_ID, $GROUP_ID, and $UMASK
+  cat <<EOF >> /files/FileBot.conf
 
 COMMAND="bash /files/filebot.sh"
 
@@ -109,7 +115,7 @@ function validate_configuration {
 #-----------------------------------------------------------------------------------------------------------------------
 
 function setup_opensubtitles_account {
-  . /config/filebot.conf
+  . /files/FileBot.conf
 
   if [ "$OPENSUBTITLES_USER" != "" ]; then
     echo "$(ts) Configuring for OpenSubtitles user \"$OPENSUBTITLES_USER\""
