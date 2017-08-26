@@ -89,10 +89,10 @@ sed -i 's/java /java -Dsun.java2d.xrender=false /' /usr/bin/filebot && \
 
 # Revision-lock to a specific version to avoid any surprises.
 wget -q -O /files/runas.sh \
-  'https://raw.githubusercontent.com/coppit/docker-inotify-command/1401a636bbc9369141d0d32ac7b80c2bf7fcdbcb/runas.sh' && \
+  'https://raw.githubusercontent.com/coppit/docker-inotify-command/c9e9c8b980d3a5ba4abfe7c1b069f684a56be6d2/runas.sh' && \
 chmod +x /files/runas.sh && \
 wget -q -O /files/monitor.py \
-  'https://raw.githubusercontent.com/coppit/docker-inotify-command/1401a636bbc9369141d0d32ac7b80c2bf7fcdbcb/monitor.py' && \
+  'https://raw.githubusercontent.com/coppit/docker-inotify-command/c9e9c8b980d3a5ba4abfe7c1b069f684a56be6d2/monitor.py' && \
 chmod +x /files/monitor.py
 
 # Add scripts. Make sure everything is executable by $USER_ID
