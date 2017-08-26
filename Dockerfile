@@ -108,3 +108,7 @@ ADD 50_configure_filebot.sh /etc/my_init.d/
 RUN mkdir /etc/service/filebot
 ADD monitor.sh /etc/service/filebot/run
 RUN chmod +x /etc/service/filebot/run
+
+RUN mkdir /etc/service/filebot-ui
+ADD startapp.sh /etc/service/filebot-ui/run
+RUN chmod +x /etc/service/filebot-ui/run
