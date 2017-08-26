@@ -9,7 +9,7 @@ function ts {
 #-----------------------------------------------------------------------------------------------------------------------
 
 # Run once at the start
-echo "$(ts) Running FileBot on startup"
+echo "$(ts) Running FileBot auto-renamer on startup"
 /files/runas.sh $USER_ID $GROUP_ID $UMASK /files/filebot.sh
 
 # Start monitoring
