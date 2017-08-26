@@ -31,7 +31,7 @@ echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | /u
 # Update apt and install dependencies.
 apt-get update && \
 # Install a specific version for reproducible builds
-apt-get install -qy 'oracle-java8-installer=8u131-1~webupd8~2' && \
+apt-get install -qy 'oracle-java8-installer=8u144-1~webupd8~0' && \
 
 # libchromaprint-tools for fpcalc, used to compute AcoustID fingerprints for MP3s.
 apt-get install -qy mediainfo libchromaprint-tools && \
