@@ -127,6 +127,25 @@ function setup_opensubtitles_account {
 
 #-----------------------------------------------------------------------------------------------------------------------
 
+function configure_java_prefs {
+  . /files/FileBot.conf
+
+  echo "$(ts) Creating user for ID $USER_ID and group for ID $GROUP_ID if necessary"
+  # Running command as user "user_99_100"...
+  runas_user=$(/files/runas.sh $USER_ID $GROUP_ID $UMASK true | grep Running | sed 's/.*"\(.*\)".*/\1/')
+
+  mkdir -p /config/java_prefs /$runas_user/.java/.userPrefs/net
+  chown -R 99:100 /config/java_prefs /$runas_user/.java
+  rm -f /$runas_user/.java/.userPrefs/net/filebot
+  echo Before creating symlink
+  ls -al /config/java_prefs /$runas_user/.java/.userPrefs/net
+  ln -s /config/java_prefs /$runas_user/.java/.userPrefs/net/filebot
+  echo After creating symlink
+  ls -al /config/java_prefs /$runas_user/.java/.userPrefs/net
+}
+
+#-----------------------------------------------------------------------------------------------------------------------
+
 echo "$(ts) Starting FileBot container"
 
 initialize_configuration
@@ -138,3 +157,5 @@ create_conf_and_sh_files
 validate_configuration
 
 setup_opensubtitles_account
+
+configure_java_prefs

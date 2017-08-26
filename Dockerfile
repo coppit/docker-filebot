@@ -69,9 +69,6 @@ COPY startapp.sh /
 
 RUN \
 
-mkdir -p /nobody/.java/.userPrefs/net/filebot && \
-ln -s /nobody/.java/.userPrefs/net/filebot /config && \
-
 # Fix guacamole errors and warnings:
 # SEVERE: The scratchDir you specified: /var/lib/tomcat7/work/Catalina/localhost/guacamole is unusable.
 # SEVERE: Cannot find specified temporary folder at /tmp/tomcat7-tomcat7-tmp
