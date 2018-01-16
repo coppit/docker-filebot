@@ -30,8 +30,9 @@ echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | /u
 
 # Update apt and install dependencies.
 apt-get update && \
-# Install a specific version for reproducible builds
-apt-get install -qy 'oracle-java8-installer=8u144-1~webupd8~0' && \
+# Install a specific version for reproducible builds. See this for supported versions:
+# http://ppa.launchpad.net/webupd8team/java/ubuntu/pool/main/o/oracle-java8-installer/
+apt-get install -qy 'oracle-java8-installer=8u151-1~webupd8~0' && \
 
 # libchromaprint-tools for fpcalc, used to compute AcoustID fingerprints for MP3s.
 apt-get install -qy mediainfo libchromaprint-tools && \
@@ -80,7 +81,7 @@ ln -s /var/lib/tomcat7/shared /usr/share/tomcat7/shared && \
 
 # To find the latest version: https://www.filebot.net/download.php?mode=s&type=deb&arch=amd64
 # We'll use a specific version for reproducible builds
-wget -q -O /files/filebot.deb \
+wget --no-check-certificate -q -O /files/filebot.deb \
   'https://sourceforge.net/projects/filebot/files/filebot/FileBot_4.7.9/filebot_4.7.9_amd64.deb' && \
 dpkg -i /files/filebot.deb && rm /files/filebot.deb && \
 
@@ -88,10 +89,10 @@ dpkg -i /files/filebot.deb && rm /files/filebot.deb && \
 sed -i 's/java /java -Dsun.java2d.xrender=false /' /usr/bin/filebot && \
 
 # Revision-lock to a specific version to avoid any surprises.
-wget -q -O /files/runas.sh \
+wget --no-check-certificate -q -O /files/runas.sh \
   'https://raw.githubusercontent.com/coppit/docker-inotify-command/c9e9c8b980d3a5ba4abfe7c1b069f684a56be6d2/runas.sh' && \
 chmod +x /files/runas.sh && \
-wget -q -O /files/monitor.py \
+wget --no-check-certificate -q -O /files/monitor.py \
   'https://raw.githubusercontent.com/coppit/docker-inotify-command/c9e9c8b980d3a5ba4abfe7c1b069f684a56be6d2/monitor.py' && \
 chmod +x /files/monitor.py
 
