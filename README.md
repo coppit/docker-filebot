@@ -60,6 +60,8 @@ After you gain confidence in how the container is running, you may want to chang
 
 By default, FileBot will create files using user ID 0 (typically root) and group ID 0 (typically root), and with a umask of 0022. If you wish to change this, set the `USER_ID`, `GROUP_ID`, and `UMASK` environment variables to the right values from your host system. You can find the IDs using the "id" command. For example, for the user "nobody", it would be `id -u nobody` and `id -g nobody`. You can get the umask for a user like "nobody" by running `su -l nobody -c umask`.
 
+The `ALLOW_REPROCESSING` setting controls whether FileBot can reprocess a file if it is created again in the input directory. You should delete amc-exclude-list.txt in your config directory if you enable this for the first time. Note that filebot will refuse to reprocess an input file if the output file already exists.
+
 ### Updates to filebot.sh
 
 Later, when you update the container, it may exit with this message in the log:

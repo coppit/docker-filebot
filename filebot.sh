@@ -38,7 +38,7 @@ fi
 #-----------------------------------------------------------------------------------------------------------------------
 
 # Used to detect old versions of this script
-VERSION=4
+VERSION=5
 
 # Download scripts and such.
 . /files/pre-run.sh
@@ -48,3 +48,11 @@ filebot -script fn:amc -no-xattr --output "$OUTPUT_DIR" --log-file /files/amc.lo
   -non-strict --def ut_dir="$INPUT_DIR" ut_kind=multi music=y deleteAfterExtract=y clean=y \
   excludeList=/config/amc-exclude-list.txt $SUBTITLE_OPTION \
   movieFormat="$MOVIE_FORMAT" musicFormat="$MUSIC_FORMAT" seriesFormat="$SERIES_FORMAT"
+
+if [ "$ALLOW_REPROCESSING" = "yes" ]; then
+  tempfile=$(mktemp)
+  # FileBot only puts files that it can process into the amc-exclude-list.txt file. e.g. jpg files are not in there. So
+  # take the intersection of the existing files and the ones in the list.
+  comm -12 <(sort /config/amc-exclude-list.txt) <(find /input | sort) > $tempfile
+  mv -f $tempfile /config/amc-exclude-list.txt
+fi
