@@ -11,7 +11,7 @@ CMD ["/sbin/my_init"]
 ENV DEBIAN_FRONTEND noninteractive
 ADD dpkg-excludes /etc/dpkg/dpkg.cfg.d/excludes
 
-RUN \
+RUN true && \
 
 # Create dir to keep things tidy. Make sure it's readable by $USER_ID
 mkdir /files && \
