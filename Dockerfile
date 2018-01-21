@@ -90,7 +90,7 @@ sed -i 's/java /java -Dsun.java2d.xrender=false /' /usr/bin/filebot && \
 
 # Revision-lock to a specific version to avoid any surprises.
 wget --no-check-certificate -q -O /files/runas.sh \
-  'https://raw.githubusercontent.com/coppit/docker-inotify-command/c9e9c8b980d3a5ba4abfe7c1b069f684a56be6d2/runas.sh' && \
+  'https://raw.githubusercontent.com/coppit/docker-inotify-command/1d4b941873b670525fd159dcb9c01bb2570b0565/runas.sh' && \
 chmod +x /files/runas.sh && \
 wget --no-check-certificate -q -O /files/monitor.py \
   'https://raw.githubusercontent.com/coppit/docker-inotify-command/c9e9c8b980d3a5ba4abfe7c1b069f684a56be6d2/monitor.py' && \
