@@ -62,6 +62,8 @@ By default, FileBot will create files using user ID 0 (typically root) and group
 
 The `ALLOW_REPROCESSING` setting controls whether FileBot can reprocess a file if it is created again in the input directory. You should delete amc-exclude-list.txt in your config directory if you enable this for the first time. Note that filebot will refuse to reprocess an input file if the output file already exists.
 
+The `USE_UI` setting controls whether the user interface features are enabled. Set this to "yes" to enable the UI, which uses approximately 460MB of RAM, as opposed to 20MB of RAM. On my machine it uses .33% CPU instead of .03% CPU.
+
 ### Updates to filebot.sh
 
 Later, when you update the container, it may exit with this message in the log:
