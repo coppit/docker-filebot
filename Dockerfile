@@ -68,7 +68,7 @@ ENV LC_ALL en_US.UTF-8
 
 COPY startapp.sh /
 
-RUN \
+RUN true && \
 
 # Fix guacamole errors and warnings:
 # SEVERE: The scratchDir you specified: /var/lib/tomcat7/work/Catalina/localhost/guacamole is unusable.
