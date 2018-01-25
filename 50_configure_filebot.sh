@@ -135,7 +135,7 @@ function configure_java_prefs {
   runas_user=$(/files/runas.sh $USER_ID $GROUP_ID $UMASK true | grep Running | sed 's/.*"\(.*\)".*/\1/')
 
   mkdir -p /config/java_prefs /$runas_user/.java/.userPrefs/net
-  chown -R 99:100 /config/java_prefs /$runas_user/.java
+  chown -R $USER_ID:$GROUP_ID /config/java_prefs /$runas_user/.java
   rm -f /$runas_user/.java/.userPrefs/net/filebot
   echo Before creating symlink
   ls -al /config/java_prefs /$runas_user/.java/.userPrefs/net
