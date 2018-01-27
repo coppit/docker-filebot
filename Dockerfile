@@ -23,7 +23,9 @@ echo "Acquire::http {No-Cache=True;};" > /etc/apt/apt.conf.d/no-cache && \
 
 # Filebot requires Java 8. UI doesn't work with openjdk, so we use Oracle Java. (Gives an error when trying to rename a
 # file.)
-add-apt-repository ppa:webupd8team/java && \
+add-apt-repository ppa:webupd8team/java
+
+RUN true && \
 
 # Auto-accept Oracle JDK license
 echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections && \
@@ -32,7 +34,10 @@ echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | /u
 apt-get update && \
 
 # Fix from https://stackoverflow.com/a/48343372/730300. Download first, let it fail, patch, then try again
-( apt-get install -qy 'oracle-java8-installer=8u151-1~webupd8~0' || true ) && \
+( apt-get install -qy 'oracle-java8-installer=8u151-1~webupd8~0' || true )
+
+RUN true && \
+
 sed -i 's|JAVA_VERSION=8u151|JAVA_VERSION=8u162|' /var/lib/dpkg/info/oracle-java8-installer.* && \
 sed -i 's|PARTNER_URL=http://download.oracle.com/otn-pub/java/jdk/8u151-b12/e758a0de34e24606bca991d704f6dcbf/|PARTNER_URL=http://download.oracle.com/otn-pub/java/jdk/8u162-b12/0da788060d494f5095bf8624735fa2f1/|' /var/lib/dpkg/info/oracle-java8-installer.* && \
 sed -i 's|SHA256SUM_TGZ="c78200ce409367b296ec39be4427f020e2c585470c4eed01021feada576f027f"|SHA256SUM_TGZ="68ec82d47fd9c2b8eb84225b6db398a72008285fafc98631b1ff8d2229680257"|' /var/lib/dpkg/info/oracle-java8-installer.* && \
@@ -40,7 +45,9 @@ sed -i 's|J_DIR=jdk1.8.0_151|J_DIR=jdk1.8.0_162|' /var/lib/dpkg/info/oracle-java
 
 # Install a specific version for reproducible builds. See this for supported versions:
 # https://launchpad.net/~webupd8team/+archive/ubuntu/java/+packages
-apt-get install -qy 'oracle-java8-installer=8u151-1~webupd8~0' && \
+apt-get install -qy 'oracle-java8-installer=8u151-1~webupd8~0'
+
+RUN true && \
 
 # libchromaprint-tools for fpcalc, used to compute AcoustID fingerprints for MP3s.
 apt-get install -qy mediainfo libchromaprint-tools && \
