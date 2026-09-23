@@ -1,3 +1,6 @@
+> [!CAUTION]
+> **This project is retired.**
+
 # docker-filebot
 
 This is a Docker container for running [FileBot](http://www.filebot.net/), a media file organizer. The container has both a user interface as well as a fully automated mode. The GUI is exposed via RDP and HTTP. For the automated version, you just drop files into the input directory, and they'll be cleaned up and moved to the output directory.
